@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
+import com.pricehistory.ProductServiceClient;
+import com.pricehistory.RetailerServiceClient;
 import com.pricehistory.Dto.PriceHistoryDto;
 import com.pricehistory.Dto.PriceHistoryDto2;
 import com.pricehistory.Dto.PriceHistoryUpdateDto;
@@ -24,6 +26,25 @@ import com.pricehistory.service.PriceHistoryService;
 @RestController
 @RequestMapping("/pricehistory")
 public class PriceHistoryController { 
+	
+	private final ProductServiceClient productServiceClient;
+	private final RetailerServiceClient retailerServiceClient;
+	
+	@Autowired
+	public PriceHistoryController(ProductServiceClient productServiceClient, RetailerServiceClient retailerServiceClient) {
+		this.productServiceClient = productServiceClient;
+		this.retailerServiceClient = retailerServiceClient;
+	}
+	
+	@GetMapping("/getProduct/{productId}")
+	public ResponseEntity<?> getProductById(@PathVariable("productId") Long productId){
+		return productServiceClient.getProductById(productId);
+	}
+	
+	@GetMapping("/getRetailer/{retailerId}")
+	public ResponseEntity<?> getRetailerById(@PathVariable("retailerId") Long retailerId){
+		return retailerServiceClient.getRetailerById(retailerId);
+	}
 	
 	@Autowired
 	private PriceHistoryService priceHistoryServ;
